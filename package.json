@@ -1,6 +1,6 @@
 {
   "name": "mharj-dispatcher",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Dispatcher",
   "main": "dist/index.js",
   "scripts": {
@@ -15,7 +15,7 @@
     "url": "git+https://github.com/mharj/dispatcher.git"
   },
   "author": "mharj",
-  "license": "GPL-2.0-only",
+  "license": "LGPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/mharj/dispatcher/issues"
   },
