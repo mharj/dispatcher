@@ -6,6 +6,11 @@ interface ITest {
 	_act: string;
 }
 
+interface ITestDual {
+	_act: string;
+	_type: string;
+}
+
 interface IData {
 	test: string,
 }
@@ -74,6 +79,14 @@ describe('reducer', () => {
 				.catch( (err) => {
 					done(err);
 				});
+		});
+		it('should validate keys', (done) => {
+			const dis = new Dispatcher<ITestDual, string>(['_act','_type']);
+			expect(dis.isValid({_act: 'asd',_type: 'qwe'})).to.be.true;
+			expect(dis.isValid({_type: 'qwe'})).to.be.false;
+			expect(dis.isValid({_act: 'asd'})).to.be.false;
+			expect(dis.isValid({_other: 'asd'})).to.be.false;
+			done();
 		});
 	});
 });

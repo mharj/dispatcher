@@ -26,6 +26,19 @@ export class Dispatcher<A extends object, PT> {
 		this.keys = keys as string[];
 	}
 	/**
+	 * Validate keys from action object
+	 * @param entry
+	 */
+	public isValid(action: object) {
+		let ret = true;
+		this.keys.forEach((key) => {
+			if (!(key in action) ) {
+				ret = false;
+			}
+		});
+		return ret;
+	}
+	/**
 	 * Attach Promise to target key(s)
 	 * @param {object} register as Action target where object keys are valid for constructor key array
 	 * @param {(arg: object) => Promise<any>} promise register promise function which returns new Promise when done
@@ -33,14 +46,10 @@ export class Dispatcher<A extends object, PT> {
 	 * @template T Dispatched Promise argument type
 	 */
 	public addPromise<T>(register: A, promise: (arg0: T) => Promise<PT>): number {
-		try {
-			const index = this.registry.length;
-			const data = {...(register as object), promise} as A & IPromiseParam;
-			this.registry.push(data);
-			return index;
-		} catch (err) {
-			throw err;
-		}
+		const index = this.registry.length;
+		const data = {...(register as object), promise} as A & IPromiseParam;
+		this.registry.push(data);
+		return index;
 	}
 	/**
 	 * Remove Promise from target key(s)
