@@ -4,7 +4,8 @@
   "description": "Typescript based Dispatcher",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+	 "build": "tsc",
+	 "prepublishOnly": "npm run build",
     "test": "mocha -r ts-node/register test/*.ts"
   },
   "files": [
