@@ -6,13 +6,13 @@ Typescript based Dispatcher
 // new dispatcher with specific keys
 const disp = new Dispatcher(['_act', '_target']);
 // register promise to keys
-disp.addPromise({_target: 'weather', _act: 'update'}, (weatherData) => {
+disp.addAction({_target: 'weather', _act: 'update'}, (weatherData) => {
 	console.log('weatherData', weatherData);
 	return Promise.resolve();
 });
 // dispatch some message
 const msg = {_target: 'weather', _act: 'update', location: 'some city', temp: 10};
-disp.dispatch(msg)
+Promise.all(disp.dispatch(msg))
 	.then( () => {
 		console.log('dispatch done');
 	})
@@ -33,23 +33,22 @@ interface IData {
 	temp: number;
 }
 // new dispatcher with specific keys
-const disp = new Dispatcher<IKeys, void>(['_act', '_target']);
+const disp = new Dispatcher<IKeys, Promise<void>>(['_act', '_target']);
 // register promise to keys
 const dispKey: IKeys = {_target: 'weather', _act: 'update'};
-disp.addPromise<IData>(dispKey, (data) => {
+disp.addAction<IData>(dispKey, (data) => {
 	console.log('weatherData', data.location, data.temp);
 	return Promise.resolve();
 });
 // dispatch some message
 const msg: IData & IKeys = {_target: 'weather', _act: 'update', location: 'some city', temp: 10};
-disp.dispatch(msg)
+Promise.all(disp.dispatch(msg))
 	.then( () => {
 		console.log('dispatch done');
 	})
 	.catch( (err) => {
 		console.log('Dispatch error', err);
 	});
-
 ```
 
 ## Typescript example with Keys/Action/Promise functions and two keys
@@ -79,11 +78,11 @@ const weatherMessageDispatchPromise = (data: IData) => {
 }
 
 // new dispatcher with specific keys
-const disp = new Dispatcher<IKeys, void>(['_act', '_target']);
+const disp = new Dispatcher<IKeys, Promise<void>>(['_act', '_target']);
 // register promise to keys
-disp.addPromise<IData>( weatherMessageKeys(), weatherMessageDispatchPromise);
-// dispatch some message
-disp.dispatch( weatherMessageAction('some city', 10) )
+disp.addAction<IData>( weatherMessageKeys(), weatherMessageDispatchPromise);
+// dispatch some promise messages
+Promise.all(disp.dispatch( weatherMessageAction('some city', 10) ))
 	.then( () => {
 		console.log('dispatch done');
 	})
