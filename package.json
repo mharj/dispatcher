@@ -1,7 +1,7 @@
 {
   "name": "mharj-dispatcher",
-  "version": "0.1.0",
-  "description": "Dispatcher",
+  "version": "0.1.1",
+  "description": "Typescript based Dispatcher",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
@@ -14,6 +14,11 @@
     "type": "git",
     "url": "git+https://github.com/mharj/dispatcher.git"
   },
+  "keywords": [
+	 "dispatcher",
+	 "typescript",
+	 "javascript"
+  ],
   "author": "mharj",
   "license": "LGPL-3.0-or-later",
   "bugs": {
