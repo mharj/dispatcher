@@ -1,5 +1,5 @@
-# dispatcher
-Typescript based Dispatcher
+# dispatcher [![Build Status](https://travis-ci.org/mharj/dispatcher.svg?branch=master)](https://travis-ci.org/mharj/dispatcher)
+Typescript based Dispatcher 
 
 ## Javascript example with two keys
 ```javascript
