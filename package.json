@@ -1,11 +1,11 @@
 {
   "name": "mharj-dispatcher",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Typescript based Dispatcher",
   "main": "dist/index.js",
   "scripts": {
-	 "build": "tsc",
-	 "prepublishOnly": "npm run build",
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
     "test": "mocha -r ts-node/register test/*.ts"
   },
   "files": [
@@ -16,9 +16,9 @@
     "url": "git+https://github.com/mharj/dispatcher.git"
   },
   "keywords": [
-	 "dispatcher",
-	 "typescript",
-	 "javascript"
+    "dispatcher",
+    "typescript",
+    "javascript"
   ],
   "author": "mharj",
   "license": "LGPL-3.0-or-later",
@@ -29,11 +29,15 @@
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.5",
-    "@types/node": "^10.12.12",
+    "@types/node": "^10.12.20",
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
-    "ts-node": "^7.0.1",
-    "tslib": "^1.9.3",
-    "typescript": "^3.2.1"
+    "ts-node": "^8.0.2",
+    "tslint": "^5.12.1",
+    "tslint-config-prettier": "^1.17.0",
+    "typescript": "^3.2.4"
+  },
+  "dependencies": {
+    "tslib": "^1.9.3"
   }
 }
