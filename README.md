@@ -6,8 +6,8 @@ Typescript based Dispatcher
 // new dispatcher with specific keys
 const disp = new Dispatcher(['_act', '_target']);
 // register promise to keys
-disp.addAction({_target: 'weather', _act: 'update'}, (weatherData) => {
-	console.log('weatherData', weatherData);
+disp.addAction({_target: 'weather', _act: 'update'}, ({data}) => {
+	console.log('weatherData', data);
 	return Promise.resolve();
 });
 // dispatch some message
@@ -36,13 +36,13 @@ interface IData {
 const disp = new Dispatcher<IKeys, Promise<void>>(['_act', '_target']);
 // register promise to keys
 const dispKey: IKeys = {_target: 'weather', _act: 'update'};
-disp.addAction<IData>(dispKey, (data) => {
+disp.addAction<IData>(dispKey, ({keys, params, data}) => {
 	console.log('weatherData', data.location, data.temp);
 	return Promise.resolve();
 });
 // dispatch some message
 const msg: IData & IKeys = {_target: 'weather', _act: 'update', location: 'some city', temp: 10};
-Promise.all(disp.dispatch(msg))
+Promise.all(disp.dispatch(msg, undefined))
 	.then( () => {
 		console.log('dispatch done');
 	})
@@ -72,7 +72,7 @@ const weatherMessageAction = (location: string, temp: number): IData & IKeys => 
 	return {_target: 'weather', _act: 'update', location, temp}
 }
 // construct dispatch Promise to handle payload (and resolve Promise)
-const weatherMessageDispatchPromise = (data: IData) => {
+const weatherMessageDispatchPromise = ({data}:{data: IData}) => {
 	console.log('weatherData', data.location, data.temp);
 	return Promise.resolve();
 }
