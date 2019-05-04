@@ -23,12 +23,15 @@ describe('dispatcher', () => {
 	it('should return resolve promise', (done) => {
 		const dis = new Dispatcher<ITest, Promise<string>>(['_act']);
 		const dispKey: ITest = {_act: 'data'};
-		dis.addAction<IData>(dispKey, (data) => {
+		dis.addAction<IData>(dispKey, ({data, params, keys}) => {
+			expect(JSON.stringify(data)).to.be.eq(JSON.stringify({test: 'demo'}));
+			expect(JSON.stringify(keys)).to.be.eq(JSON.stringify({_act: 'data'}));
+			expect(params).to.be.undefined;
 			return Promise.resolve(data.test);
 		});
 
 		const payload: IData & ITest = {_act: 'data', test: 'demo'};
-		let actionList = dis.dispatch(payload);
+		const actionList = dis.dispatch(payload, undefined);
 		Promise.all(actionList)
 			.then(() => {
 				done();
@@ -41,24 +44,26 @@ describe('dispatcher', () => {
 		const dis = new Dispatcher<ITest, Promise<string>, IOptions>(['_act']);
 		const dispKey: ITest = {_act: 'data'};
 		let value = 0;
-		const index0 = dis.addAction<IData>(dispKey, (data, options) => {
+		const index0 = dis.addAction<IData>(dispKey, ({params}) => {
 			value += 1;
-			if (options) {
-				value += options.extraValue;
+			if (params) {
+				value += params.extraValue;
 			}
 			return Promise.resolve('0');
 		});
-		const index1 = dis.addAction<IData>(dispKey, (data, options) => {
+		const index1 = dis.addAction<IData>(dispKey, ({keys, params, data}) => {
+			expect(JSON.stringify(data)).to.be.eq(JSON.stringify({test: 'demo'}));
+			expect(JSON.stringify(keys)).to.be.eq(JSON.stringify({_act: 'data'}));
 			value += 2;
-			if (options) {
-				value += options.extraValue;
+			if (params) {
+				value += params.extraValue;
 			}
 			return Promise.resolve('1');
 		});
-		const index2 = dis.addAction<IData>(dispKey, (data, options) => {
+		const index2 = dis.addAction<IData>(dispKey, ({params}) => {
 			value += 3;
-			if (options) {
-				value += options.extraValue;
+			if (params) {
+				value += params.extraValue;
 			}
 			return Promise.resolve('2');
 		});

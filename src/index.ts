@@ -3,20 +3,27 @@
  * @property {string} promise The name of the person.
  */
 interface ICallbackParam {
+	data: any,
+	params: any,
+	keys: any,
+}
+
+interface ICallbackFunction {
 	/**
 	 * @param {any} arg0 Dispatcher object payload
 	 * @returns {Promise<any>} Promise when Dispatched function is done
 	 */
-	callback: (arg0: any, options?: any) => any;
+	callback: (arg0: ICallbackParam) => any;
 }
 
 /**
  * @template K Action key(s) type
+ * @template O parameters passed on dispatch
  * @template AR Dispatched action return type
  */
 
 export class Dispatcher<K extends object, AR = void, O = undefined> {
-	private registry: Array<K & ICallbackParam> = [];
+	private registry: Array<K & ICallbackFunction> = [];
 	private keys: string[];
 	/**
 	 * Create Dispatcher
@@ -41,14 +48,17 @@ export class Dispatcher<K extends object, AR = void, O = undefined> {
 	/**
 	 * Attach Action to target key(s)
 	 * @param {object} register as Action target where object keys are valid for constructor key array
-	 * @param {(arg: object, options: object) => Promise<any>} callback register callback function
+	 * @param {({data: T, params: O, keys: K}) => AR} callback register callback function
 	 * @returns {number} id number
-	 * @template T Dispatched Promise argument type
+	 * @template T data type returned for action
+	 * @template O parameters passed on dispatch
+	 * @template K keys from dispatch action
+	 * @template AR Dispatched action return type
 	 */
-	public addAction<T>(register: K, callback: (arg0: T, options?: O) => AR): number {
+	public addAction<T>(register: K, callback: (output:{data: T, params: O, keys: K}) => AR): number {
 		const index = this.registry.length;
-		const data = {...(register as object), callback} as K & ICallbackParam;
-		this.registry.push(data);
+		const callbackData = {...(register as object), callback} as K & ICallbackFunction;
+		this.registry.push(callbackData);
 		return index;
 	}
 	/**
@@ -64,10 +74,15 @@ export class Dispatcher<K extends object, AR = void, O = undefined> {
 	 * @param options pass data to Dispatch Promise
 	 * @returns {Array<any>} Array of Data
 	 */
-	public dispatch(action: K, options?: O): AR[] {
+	public dispatch(action: K, options: O): AR[] {
 		const pairs = this.getKeyPairs(action);
 		const regs = this.findRegistryEntries(pairs);
-		return regs.map((reg) => reg.callback(this.removeKeys(action), options));
+		const out: ICallbackParam = {
+			data: this.removeKeys(action),
+			keys: this.getKeys(action),
+			params: options,
+		}
+		return regs.map((reg) => reg.callback(out));
 	}
 	/**
 	 * Check that we have all needed keys
@@ -100,11 +115,18 @@ export class Dispatcher<K extends object, AR = void, O = undefined> {
 		});
 		return payload;
 	}
+	private getKeys(data: K): K {
+		const out:any = {};
+		this.keys.forEach((k) => {
+			out[k] = data[k];
+		});
+		return out as K;
+	}
 	/**
 	 * Find Action from registry
 	 * @param pairs keys to find Promises
 	 */
-	private findRegistryEntries(pairs: object): Array<K & ICallbackParam> {
+	private findRegistryEntries(pairs: object): Array<K & ICallbackFunction> {
 		return this.registry.filter((r) => this.doWeHaveAllKeys(pairs, r));
 	}
 	/**
@@ -112,7 +134,7 @@ export class Dispatcher<K extends object, AR = void, O = undefined> {
 	 * @param pairs filter keys
 	 * @param entry registry entry
 	 */
-	private doWeHaveAllKeys(pairs: object, entry: K & ICallbackParam): boolean {
+	private doWeHaveAllKeys(pairs: object, entry: K & ICallbackFunction): boolean {
 		let ret = true;
 		Object.keys(pairs).forEach((key) => {
 			if (!(key in entry) || entry[key] !== pairs[key]) {
