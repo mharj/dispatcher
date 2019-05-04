@@ -36,7 +36,7 @@ export class Dispatcher<K extends object, AR = void, O = undefined> {
 	 * Validate keys from action object
 	 * @param entry
 	 */
-	public isValid(action: object) {
+	public isValid(action: object): action is K & object {
 		let ret = true;
 		this.keys.forEach((key) => {
 			if (!(key in action)) {
@@ -65,7 +65,7 @@ export class Dispatcher<K extends object, AR = void, O = undefined> {
 	 * Remove Promise from target key(s)
 	 * @param id to use remove promise
 	 */
-	public removeAction(id: number) {
+	public removeAction(id: number): void {
 		this.registry.splice(id, 1);
 	}
 	/**
@@ -108,14 +108,14 @@ export class Dispatcher<K extends object, AR = void, O = undefined> {
 	 * @param {object} data payload
 	 * @returns {object} without Dispatch keys
 	 */
-	private removeKeys(data: K) {
+	private removeKeys(data: K & object): object {
 		const payload = {...(data as object)};
 		this.keys.forEach((k) => {
 			delete payload[k];
 		});
 		return payload;
 	}
-	private getKeys(data: K): K {
+	private getKeys(data: K & object): K {
 		const out:any = {};
 		this.keys.forEach((k) => {
 			out[k] = data[k];

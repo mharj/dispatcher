@@ -84,7 +84,13 @@ describe('dispatcher', () => {
 	});
 	it('should validate keys', (done) => {
 		const dis = new Dispatcher<ITestDual, string>(['_act', '_type']);
-		expect(dis.isValid({_act: 'asd', _type: 'qwe'})).to.be.true;
+		const data:ITestDual = {_act: 'asd', _type: 'qwe'};
+		if ( dis.isValid(data) ) {
+			expect(data._act).to.be.eq(data._act);
+			expect(data._type).to.be.eq(data._type);
+		} else {
+			throw new Error('should not happen');
+		}
 		expect(dis.isValid({_type: 'qwe'})).to.be.false;
 		expect(dis.isValid({_act: 'asd'})).to.be.false;
 		expect(dis.isValid({_other: 'asd'})).to.be.false;
