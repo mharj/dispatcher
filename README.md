@@ -4,7 +4,7 @@ Typescript based Dispatcher
 ## Javascript example with two keys
 ```javascript
 // new dispatcher with specific keys
-const disp = new Dispatcher(['_act', '_target']);
+const disp = new Dispatcher();
 // register promise to keys
 disp.addAction({_target: 'weather', _act: 'update'}, ({data}) => {
 	console.log('weatherData', data);
@@ -33,7 +33,7 @@ interface IData {
 	temp: number;
 }
 // new dispatcher with specific keys
-const disp = new Dispatcher<IKeys, Promise<void>>(['_act', '_target']);
+const disp = new Dispatcher<IKeys, Promise<void>>();
 // register promise to keys
 const dispKey: IKeys = {_target: 'weather', _act: 'update'};
 disp.addAction<IData>(dispKey, ({keys, params, data}) => {
@@ -78,7 +78,7 @@ const weatherMessageDispatchPromise = ({data}:{data: IData}) => {
 }
 
 // new dispatcher with specific keys
-const disp = new Dispatcher<IKeys, Promise<void>>(['_act', '_target']);
+const disp = new Dispatcher<IKeys, Promise<void>>();
 // register promise to keys
 disp.addAction<IData>( weatherMessageKeys(), weatherMessageDispatchPromise);
 // dispatch some promise messages
